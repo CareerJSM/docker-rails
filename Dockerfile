@@ -2,8 +2,6 @@
 
 FROM ruby:2.6.6-alpine3.13
 
-RUN apk update
-
 ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
 RUN \
   echo "${ALPINE_MIRROR}/edge/main" >> /etc/apk/repositories \
@@ -28,8 +26,7 @@ RUN \
   && gem install pg -- --with-pg-lib=/usr/lib
 
 # Upgrade to security issues
-RUN \
-  apk add python3=3.8.8-r0
+RUN apk add python3=3.8.8-r0
 
 # https://github.com/locomotivecms/wagon/issues/340
 WORKDIR /

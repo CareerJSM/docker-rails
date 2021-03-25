@@ -28,7 +28,9 @@ RUN \
     build-base \
     postgresql-client \
     postgresql-dev
-RUN gem install pg -- --with-pg-lib=/usr/lib
+RUN \
+  mkdir -p ${GEM_HOME} \
+  && gem install pg -- --with-pg-lib=/usr/lib
 
 # Upgrade to security issues
 RUN \

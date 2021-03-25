@@ -32,5 +32,21 @@ RUN apk add --update --no-cache \
   imagemagick6-dev \
   imagemagick6-libs
 
+# Need git for some gems
+RUN apk add --update --no-cache git
+
 # Upgrade to security issues
-RUN apk add python3=3.8.8-r0
+# https://stackoverflow.com/questions/61875869/ubuntu-20-04-upgrade-python-missing-libffi-so-6#61876234
+RUN \
+  apk add python3=3.8.8-r0 \
+  && ln -s /usr/lib/libffi.so.7 /usr/lib/libffi.so.6
+
+# https://github.com/locomotivecms/wagon/issues/340
+WORKDIR /
+COPY ./entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 3000
+CMD ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]

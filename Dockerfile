@@ -1,4 +1,4 @@
-FROM ruby:2.6.6-slim-buster
+FROM ruby:2.6.6
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh

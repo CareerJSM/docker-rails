@@ -1,4 +1,4 @@
-FROM ruby:2.6.6-stretch
+FROM ruby:2.7.2-buster
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh

@@ -15,7 +15,7 @@ ENV GEM_HOME "/usr/local/bundle"
 ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
 
 RUN mkdir -p ${GEM_HOME} \
-  && gem install bundler -v 1.3.0
+  && gem install bundler -v 2.1.4
 # https://jer-k.github.io/update-gem-dockerfile-alpine-linux
 RUN apk --update add --virtual \
   run-dependencies \

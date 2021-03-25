@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:experimental
-
 FROM ruby:2.6.6-alpine3.13
 
 ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
@@ -14,19 +12,21 @@ RUN unset BUNDLE_BIN
 ENV GEM_HOME "/usr/local/bundle"
 ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
 
-RUN gem install bundler -v 1.3.0
+RUN mkdir -p ${GEM_HOME} \
+  && gem install bundler -v 1.3.0
 # https://jer-k.github.io/update-gem-dockerfile-alpine-linux
 RUN \
   apk --update add --virtual run-dependencies \
     build-base \
     postgresql-client \
     postgresql-dev
-RUN \
-  mkdir -p ${GEM_HOME} \
-  && gem install pg -- --with-pg-lib=/usr/lib
+RUN gem install pg -- --with-pg-lib=/usr/lib
 
 # Upgrade to security issues
-RUN apk add python3=3.8.8-r0
+RUN \
+  ls -lah /usr/local/bundle \
+  && ${GEM_HOME} \
+  && apk add python3=3.8.8-r0
 
 # https://github.com/locomotivecms/wagon/issues/340
 WORKDIR /

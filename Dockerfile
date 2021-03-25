@@ -30,8 +30,10 @@ RUN \
     postgresql-dev
 RUN gem install pg -- --with-pg-lib=/usr/lib
 
-# Upgrade to fix security issues
-RUN --mount=type=cache,id=apk,target=/var/lib/apk/ apk upgrade
+# Upgrade to security issues
+RUN \
+  --mount=type=cache,id=apk,target=/var/lib/apk/ \
+  apk add python3=3.8.8-r0
 
 # https://github.com/locomotivecms/wagon/issues/340
 WORKDIR /

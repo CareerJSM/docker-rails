@@ -23,10 +23,7 @@ RUN \
 RUN gem install pg -- --with-pg-lib=/usr/lib
 
 # Upgrade to security issues
-RUN \
-  ls -lah /usr/local/bundle \
-  && ${GEM_HOME} \
-  && apk add python3=3.8.8-r0
+RUN apk add python3=3.8.8-r0
 
 # https://github.com/locomotivecms/wagon/issues/340
 WORKDIR /

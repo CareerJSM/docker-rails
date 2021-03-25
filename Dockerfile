@@ -46,7 +46,6 @@ ENTRYPOINT ["/entrypoint.sh"]
 RUN \
   apt-get update \
   && apt-get install -y debsecan \
-  && apt-get upgrade -y \
   && apt-get install $(debsecan --suite buster --format packages --only-fixed)
 
 # Cleanup apt

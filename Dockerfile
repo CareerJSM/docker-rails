@@ -1,9 +1,9 @@
 FROM ruby:2.6.6-alpine3.13
 
-ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
+ENV NODE_VERSION 14.16.0-r0
 RUN \
-  echo "${ALPINE_MIRROR}/edge/main" >> /etc/apk/repositories \
-  && apk add --no-cache nodejs-current --repository="http://dl-cdn.alpinelinux.org/alpine/edge/community"
+  apk add --update nodejs=${NODE_VERSION} npm=${NODE_VERSION} \
+  && npm install --global yarn
 
 # Don't inherit local env settings when setting up bundler
 RUN unset BUNDLE_PATH

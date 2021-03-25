@@ -37,6 +37,7 @@ jobs:
           build_extra_args: "--build-arg BUILDKIT_INLINE_CACHE=1"
       - name: Scan image for vulnerabilities
         uses: docker://docker.io/aquasec/trivy:0.2.1
+        continue-on-error: true
         timeout-minutes: 5
         with:
           args: --cache-dir /var/lib/trivy --severity "UNKNOWN,HIGH,CRITICAL" --exit-code 1 --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}

@@ -2,6 +2,9 @@
 
 FROM ruby:2.6.6-alpine3.13
 
+# Prefer buikdkit cache for apk, don't include this in final image
+RUN rm -rf /var/lib/apk/
+
 RUN --mount=type=cache,id=apk,target=/var/lib/apk/ apk update
 
 ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
@@ -26,6 +29,9 @@ RUN \
     postgresql-client \
     postgresql-dev
 RUN gem install pg -- --with-pg-lib=/usr/lib
+
+# Upgrade to fix security issues
+RUN --mount=type=cache,id=apk,target=/var/lib/apk/ apk upgrade
 
 # https://github.com/locomotivecms/wagon/issues/340
 WORKDIR /

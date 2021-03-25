@@ -1,4 +1,4 @@
-FROM ruby:2.7.2-buster
+FROM ruby:2.6.6-alpine3.13
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh

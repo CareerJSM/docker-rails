@@ -25,12 +25,5 @@ RUN gem install pg -- --with-pg-lib=/usr/lib
 # Upgrade to security issues
 RUN apk add python3=3.8.8-r0
 
-# https://github.com/locomotivecms/wagon/issues/340
-WORKDIR /
-COPY ./entrypoint.sh entrypoint.sh
-RUN chmod +x entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
-
 EXPOSE 3000
 CMD ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]

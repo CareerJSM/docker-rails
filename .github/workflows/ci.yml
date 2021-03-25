@@ -14,7 +14,7 @@ jobs:
   vulnerability-scanning:
     name: Vulnerability Scanning
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
       IMAGE_NAME: ${{ github.repository }}:latest
     steps:
@@ -23,8 +23,10 @@ jobs:
       - name: Get Image Name
         run: echo "FULL_IMAGE_NAME=$(echo '${{ github.repository }}' | awk '{print tolower($0)}'):${{ github.sha }}" >> $GITHUB_ENV
       - name: Build Base Image
+        timeout-minutes: 3
         run: docker build --cache-from=careerjsm/rails:latest -t ${{ env.FULL_IMAGE_NAME }} .
       - name: Scan image for vulnerabilities
         uses: docker://docker.io/aquasec/trivy:0.2.1
+        timeout-minutes: 5
         with:
           args: --cache-dir /var/lib/trivy --exit-code 1 --no-progress ${{ env.FULL_IMAGE_NAME }}

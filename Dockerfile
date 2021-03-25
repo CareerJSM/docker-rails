@@ -1,4 +1,4 @@
-FROM ruby:2.6.6
+FROM ruby:2.6.6-alpine
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
@@ -7,7 +7,7 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION v12.8.1
 RUN mkdir $NVM_DIR \
-  && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash \
+  && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | sh \
   && source $NVM_DIR/nvm.sh \
   && nvm install $NODE_VERSION \
   && nvm alias default $NODE_VERSION \

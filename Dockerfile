@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ruby:2.6.6-alpine3.13 AS rails
+FROM ruby:2.6.6-alpine3.13
 
 ENV NODE_VERSION 14.16.0-r0
 RUN \

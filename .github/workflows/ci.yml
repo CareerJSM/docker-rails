@@ -35,7 +35,7 @@ jobs:
           image_tag: ${{ github.sha }}
           push_git_tag: true
           build_extra_args: "--build-arg BUILDKIT_INLINE_CACHE=1"
-      - name: Scan image for vulnerabilities
+      - name: Scan Image for Vulnerabilities
         uses: docker://docker.io/aquasec/trivy:0.2.1
         continue-on-error: true
         timeout-minutes: 5

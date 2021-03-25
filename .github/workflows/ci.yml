@@ -39,4 +39,4 @@ jobs:
         uses: docker://docker.io/aquasec/trivy:0.2.1
         timeout-minutes: 5
         with:
-          args: --cache-dir /var/lib/trivy --severity "UNKNOWN,HIGH,CRITICAL" --exit-code 1 --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
+          args: --cache-dir /var/lib/trivy --severity "CRITICAL" --exit-code 1 --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}

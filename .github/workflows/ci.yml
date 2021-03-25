@@ -20,12 +20,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Get Image Name
-        run: echo "FULL_IMAGE_NAME=$(echo '${{ github.repository }}' | awk '{print tolower($0)}'):${{ github.sha }}" >> $GITHUB_ENV
-      - name: Build Base Image
+        run: echo "IMAGE_NAME=$(echo '${{ github.repository }}' | awk '{print tolower($0)}')" >> $GITHUB_ENV
+      - name: Build & Test
+        id: build-docker-image-using-cache
+        uses: whoan/docker-build-with-cache-action@v5.11.0
         timeout-minutes: 3
-        run: docker build --cache-from=careerjsm/rails:latest -t ${{ env.FULL_IMAGE_NAME }} .
+        with:
+          username: ${{ github.actor }}
+          password: "${{ secrets.GITHUB_TOKEN }}"
+          registry: docker.pkg.github.com
+          image_name: ${{ env.IMAGE_NAME }}
+          image_tag: ${{ github.sha }}
+          push_git_tag: true
+          build_extra_args: "--build-arg BUILDKIT_INLINE_CACHE=1"
       - name: Scan image for vulnerabilities
         uses: docker://docker.io/aquasec/trivy:0.2.1
         timeout-minutes: 5
         with:
-          args: --cache-dir /var/lib/trivy --severity "UNKNOWN,HIGH,CRITICAL" --exit-code 1 --no-progress ${{ env.FULL_IMAGE_NAME }}
+          args: --cache-dir /var/lib/trivy --severity "UNKNOWN,HIGH,CRITICAL" --exit-code 1 --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}

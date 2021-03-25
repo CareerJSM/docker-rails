@@ -2,14 +2,10 @@
 
 FROM ruby:2.6.6-alpine3.13
 
-# Prefer buikdkit cache for apk, don't include this in final image
-RUN rm -rf /var/lib/apk/
-
-RUN --mount=type=cache,id=apk,target=/var/lib/apk/ apk update
+RUN apk update
 
 ENV ALPINE_MIRROR "http://dl-cdn.alpinelinux.org/alpine"
 RUN \
-  --mount=type=cache,id=apk,target=/var/lib/apk/ \
   echo "${ALPINE_MIRROR}/edge/main" >> /etc/apk/repositories \
   && apk add --no-cache nodejs-current --repository="http://dl-cdn.alpinelinux.org/alpine/edge/community"
 
@@ -23,7 +19,6 @@ ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
 RUN gem install bundler -v 1.3.0
 # https://jer-k.github.io/update-gem-dockerfile-alpine-linux
 RUN \
-  --mount=type=cache,id=apk,target=/var/lib/apk/ \
   apk --update add --virtual run-dependencies \
     build-base \
     postgresql-client \
@@ -34,7 +29,6 @@ RUN \
 
 # Upgrade to security issues
 RUN \
-  --mount=type=cache,id=apk,target=/var/lib/apk/ \
   apk add python3=3.8.8-r0
 
 # https://github.com/locomotivecms/wagon/issues/340

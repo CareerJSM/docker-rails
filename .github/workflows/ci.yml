@@ -17,6 +17,8 @@ jobs:
     env:
       IMAGE_NAME: ${{ github.repository }}:latest
     steps:
+      - name: Debug action
+        uses: hmarr/debug-action@v2.0.0
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Get Image Name

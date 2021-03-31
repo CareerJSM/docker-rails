@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ruby:2.6.6-alpine3.13
+FROM ruby:2.6.5-alpine3.11
 
-ENV NODE_VERSION 14.16.0-r0
+ENV NODE_VERSION 12.21.0-r0
 RUN \
   apk add --update nodejs=${NODE_VERSION} npm=${NODE_VERSION} \
   && npm install --global yarn
@@ -34,12 +34,6 @@ RUN apk add --update --no-cache \
 
 # Need git for some gems
 RUN apk add --update --no-cache git
-
-# Upgrade to security issues
-# https://stackoverflow.com/questions/61875869/ubuntu-20-04-upgrade-python-missing-libffi-so-6#61876234
-RUN \
-  apk add python3=3.8.8-r0 \
-  && ln -s /usr/lib/libffi.so.7 /usr/lib/libffi.so.6
 
 # https://github.com/locomotivecms/wagon/issues/340
 WORKDIR /

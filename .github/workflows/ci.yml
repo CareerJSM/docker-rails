@@ -14,6 +14,9 @@ jobs:
     name: Vulnerability Scanning
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      matrix:
+        architecture: [alpine]
     env:
       IMAGE_NAME: ${{ github.repository }}:latest
     steps:
@@ -32,6 +35,7 @@ jobs:
           image_name: ${{ env.IMAGE_NAME }}
           image_tag: ${{ github.sha }}
           push_git_tag: true
+          dockerfile: Dockerfile.${{ matrix.architecture }}
           build_extra_args: "--build-arg BUILDKIT_INLINE_CACHE=1"
       - name: Scan Image for Vulnerabilities
         uses: docker://docker.io/aquasec/trivy:0.2.1

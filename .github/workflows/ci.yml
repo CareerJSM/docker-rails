@@ -27,7 +27,7 @@ jobs:
       - name: Build & Test
         id: build-docker-image-using-cache
         uses: whoan/docker-build-with-cache-action@v5.11.0
-        timeout-minutes: 3
+        timeout-minutes: 5
         with:
           username: ${{ github.actor }}
           password: "${{ secrets.GITHUB_TOKEN }}"

@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 10
     strategy:
       matrix:
-        architecture: [alpine]
+        architecture: [alpine, debian]
     env:
       IMAGE_NAME: ${{ github.repository }}:latest
     steps:

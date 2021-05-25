@@ -36,6 +36,11 @@ RUN apk add --update --no-cache \
 # Need git for some gems
 RUN apk add --update --no-cache git
 
+# Upgrade to fix known security issues
+RUN apk add \
+  musl=1.2.2_pre2-r0 \
+  ruby=2.7.3-r0
+
 # https://github.com/locomotivecms/wagon/issues/340
 WORKDIR /
 COPY ./entrypoint.sh entrypoint.sh

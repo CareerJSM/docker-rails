@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ruby:3.0.1-alpine3.13 AS ruby-base
+FROM ruby:3.0.1-alpine3.13
 
 ENV NODE_VERSION 14.16.1-r1
 ENV APK_TOOLS_VERSION 2.12.5-r0

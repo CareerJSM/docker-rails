@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ruby:3.0.1-buster AS ruby-base
+FROM ruby:3.0.1-buster
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh

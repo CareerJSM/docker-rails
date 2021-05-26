@@ -14,16 +14,13 @@ env:
   DOCKER_BUILDKIT: 1
 
 jobs:
-  vulnerability-scanning:
-    name: Vulnerability Scanning
+  build-test-publish:
+    name: Build, Test, & Publish
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    outputs:
-      full_image_name_alpine: ${{ steps.output-full-image-name.outputs.FULL_IMAGE_NAME_alpine }}
-      full_image_name_debian: ${{ steps.output-full-image-name.outputs.FULL_IMAGE_NAME_debian }}
+    timeout-minutes: 15
     strategy:
       matrix:
-        architecture: [alpine, debian]
+        architecture: [alpine, debian, bullseye]
     steps:
       - name: Debug action
         uses: hmarr/debug-action@v2.0.0
@@ -86,9 +83,10 @@ jobs:
         run: echo "CACHE_IMAGE_NAME=${CACHE_IMAGE_NAME_${{ matrix.architecture }}}" >> $GITHUB_ENV
       - name: Build and publish Docker Image to GitHub Packages Registry
         uses: VaultVulp/gp-docker-action@1.1.8
+        if: ${{ github.ref == 'refs/heads/master' || (contains(github.ref, 'tags') && contains(github.ref, matrix.architecture)) }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image-name: rails
           image-tag: latest-${{ matrix.architecture }}
           dockerfile: Dockerfile.${{ matrix.architecture }}
-          custom-args: --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from=${{ env.CACHE_IMAGE_NAME }}:${{ github.sha }}
+          custom-args: --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from=${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}

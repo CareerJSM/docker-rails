@@ -26,8 +26,11 @@ jobs:
       - name: Cache
         uses: actions/cache@v2.1.5
         with:
-          path: /var/lib/trivy
+          path: /cache/trivy
           key: trivy-${{ matrix.architecture }}-${{ github.sha }}
+          restore-keys: |
+            trivy-${{ matrix.architecture }}-${{ github.sha }}
+            trivy-${{ matrix.architecture }}-
       - name: Get Image Name
         run: echo "IMAGE_NAME=$(echo '${{ github.repository }}' | awk '{print tolower($0)}')/${{ matrix.architecture }}" >> $GITHUB_ENV
       - name: Build & Test
@@ -47,15 +50,15 @@ jobs:
         id: output-full-image-name
         run: echo '::set-output name=FULL_IMAGE_NAME_${{ matrix.architecture }}::${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}'
       - name: Scan Image for Vulnerabilities
-        uses: docker://docker.io/aquasec/trivy:0.2.1
+        uses: docker://docker.io/aquasec/trivy:0.18.3
         timeout-minutes: 5
         with:
-          args: --cache-dir /var/lib/trivy --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
+          args: --cache-dir /cache/trivy --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
       - name: Scan Image for Vulnerabilities
-        uses: docker://docker.io/aquasec/trivy:0.2.1
+        uses: docker://docker.io/aquasec/trivy:0.18.3
         timeout-minutes: 5
         with:
-          args: --cache-dir /var/lib/trivy --severity "CRITICAL" --exit-code 1 --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
+          args: --cache-dir /cache/trivy --severity "CRITICAL" --exit-code 1 --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
 
   publish:
     name: Publish

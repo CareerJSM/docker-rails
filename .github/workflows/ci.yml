@@ -14,6 +14,9 @@ jobs:
     name: Vulnerability Scanning
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      full_image_name_alpine: ${{ steps.output-full-image-name.outputs.FULL_IMAGE_NAME_alpine }}
+      full_image_name_debian: ${{ steps.output-full-image-name.outputs.FULL_IMAGE_NAME_debian }}
     strategy:
       matrix:
         architecture: [alpine, debian]
@@ -35,6 +38,9 @@ jobs:
           push_git_tag: true
           dockerfile: Dockerfile.${{ matrix.architecture }}
           build_extra_args: --build-arg BUILDKIT_INLINE_CACHE=1
+      - name: Output the Full Image Name
+        id: output-full-image-name
+        run: echo '::set-output name=FULL_IMAGE_NAME_${{ matrix.architecture }}::${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}'
       - name: Scan Image for Vulnerabilities
         uses: docker://docker.io/aquasec/trivy:0.2.1
         timeout-minutes: 5
@@ -56,7 +62,12 @@ jobs:
     strategy:
       matrix:
         architecture: [alpine, debian]
+    env:
+      CACHE_IMAGE_NAME_alpine: ${{ needs.build-test-packages.outputs.full_image_name_alpine }}
+      CACHE_IMAGE_NAME_debian: ${{ needs.build-test-packages.outputs.full_image_name_debian }}
     steps:
+      - name: Get Image Name
+        run: echo "CACHE_IMAGE_NAME=${CACHE_IMAGE_NAME_${{ matrix.architecture }}}" >> $GITHUB_ENV
       - name: Build and publish Docker Image to GitHub Packages Registry
         uses: VaultVulp/gp-docker-action@1.1.8
         with:
@@ -64,4 +75,4 @@ jobs:
           image-name: rails
           image-tag: latest-${{ matrix.architecture }}
           dockerfile: Dockerfile.${{ matrix.architecture }}
-          custom-args: --build-arg BUILDKIT_INLINE_CACHE=1
+          custom-args: --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from=${{ env.CACHE_IMAGE_NAME }}:${{ github.sha }}

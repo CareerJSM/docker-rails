@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "*-bullseye-*"
+      - "*-debian-*"
+      - "*-alpine*-*"
 
 env:
   DOCKER_BUILDKIT: 1
@@ -63,7 +67,7 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/' }}
     needs:
       - vulnerability-scanning
     timeout-minutes: 10

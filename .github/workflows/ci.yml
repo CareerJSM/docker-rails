@@ -45,20 +45,25 @@ jobs:
         uses: aquasecurity/trivy-action@0.0.17
         with:
           image-ref: ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
-          format: "template"
+          format: template
           template: "@/contrib/sarif.tpl"
-          output: "trivy-results.sarif"
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: "trivy-results.sarif"
+          output: trivy-results.sarif
       - name: Aqua Security Trivy
         uses: aquasecurity/trivy-action@0.0.17
         with:
           image-ref: ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
-          exit-code: "1"
-          severity: "CRITICAL"
-          format: "table"
+          format: table
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: trivy-results.sarif
+      - name: Aqua Security Trivy
+        uses: aquasecurity/trivy-action@0.0.17
+        with:
+          image-ref: ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
+          exit-code: 1
+          severity: CRITICAL
+          format: table
 
   publish:
     name: Publish

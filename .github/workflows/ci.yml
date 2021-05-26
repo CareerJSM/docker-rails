@@ -23,14 +23,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
-      - name: Cache
-        uses: actions/cache@v2.1.5
-        with:
-          path: /cache/trivy
-          key: trivy-${{ matrix.architecture }}-${{ github.sha }}
-          restore-keys: |
-            trivy-${{ matrix.architecture }}-${{ github.sha }}
-            trivy-${{ matrix.architecture }}-
       - name: Get Image Name
         run: echo "IMAGE_NAME=$(echo '${{ github.repository }}' | awk '{print tolower($0)}')/${{ matrix.architecture }}" >> $GITHUB_ENV
       - name: Build & Test
@@ -53,10 +45,14 @@ jobs:
         uses: aquasecurity/trivy-action@0.0.17
         with:
           image-ref: ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
-          cache-dir: /cache/trivy
           format: template
           template: "@/contrib/sarif.tpl"
           output: trivy-results.sarif
+      - name: Aqua Security Trivy
+        uses: aquasecurity/trivy-action@0.0.17
+        with:
+          image-ref: ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
+          format: table
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
         with:
@@ -65,7 +61,6 @@ jobs:
         uses: aquasecurity/trivy-action@0.0.17
         with:
           image-ref: ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
-          cache-dir: /cache/trivy
           exit-code: 1
           severity: CRITICAL
           format: table

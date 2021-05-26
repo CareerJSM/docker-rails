@@ -1,4 +1,4 @@
-name: CI
+name: CI & CD
 
 on:
   pull_request:
@@ -28,13 +28,13 @@ jobs:
         timeout-minutes: 5
         with:
           username: ${{ github.actor }}
-          password: "${{ secrets.GITHUB_TOKEN }}"
+          password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           image_name: ${{ env.IMAGE_NAME }}
           image_tag: ${{ github.sha }}
           push_git_tag: true
           dockerfile: Dockerfile.${{ matrix.architecture }}
-          build_extra_args: "--build-arg BUILDKIT_INLINE_CACHE=1"
+          build_extra_args: --build-arg BUILDKIT_INLINE_CACHE=1
       - name: Scan Image for Vulnerabilities
         uses: docker://docker.io/aquasec/trivy:0.2.1
         timeout-minutes: 5
@@ -45,3 +45,21 @@ jobs:
         timeout-minutes: 5
         with:
           args: --cache-dir /var/lib/trivy --severity "CRITICAL" --exit-code 1 --no-progress ${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
+
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' }}
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        architecture: [alpine, debian]
+    steps:
+      - name: Build and publish Docker Image to GitHub Packages Registry
+        uses: VaultVulp/gp-docker-action@1.1.8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: rails
+          image-tag: latest-${{ matrix.architecture }}
+          dockerfile: Dockerfile.${{ matrix.architecture }}
+          custom-args: --build-arg BUILDKIT_INLINE_CACHE=1

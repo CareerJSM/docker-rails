@@ -27,7 +27,7 @@ jobs:
         uses: actions/cache@v2.1.5
         with:
           path: /var/lib/trivy
-          key: trivy-${{ github.sha }}
+          key: trivy-${{ matrix.architecture }}-${{ github.sha }}
       - name: Get Image Name
         run: echo "IMAGE_NAME=$(echo '${{ github.repository }}' | awk '{print tolower($0)}')/${{ matrix.architecture }}" >> $GITHUB_ENV
       - name: Build & Test

@@ -39,9 +39,6 @@ jobs:
           push_git_tag: true
           dockerfile: Dockerfile.${{ matrix.architecture }}
           build_extra_args: --build-arg BUILDKIT_INLINE_CACHE=1
-      - name: Output the Full Image Name
-        id: output-full-image-name
-        run: echo '::set-output name=FULL_IMAGE_NAME_${{ matrix.architecture }}::${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}'
       - name: Aqua Security Trivy
         uses: aquasecurity/trivy-action@0.0.17
         with:

@@ -22,6 +22,8 @@ jobs:
       matrix:
         architecture: [alpine, debian, bullseye]
     steps:
+      - name: Debug action
+        uses: hmarr/debug-action@v2.0.0
       - name: Check if deployment
         if: ${{ github.ref == 'refs/heads/master' || (contains(github.ref, 'tags') && contains(github.ref, matrix.architecture)) }}
         run: echo "IS_DEPLOYMENT='true'" >> $GITHUB_ENV

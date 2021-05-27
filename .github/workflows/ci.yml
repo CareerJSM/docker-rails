@@ -25,6 +25,13 @@ jobs:
       - name: Check if deployment
         if: ${{ github.ref == 'refs/heads/master' || (contains(github.ref, 'tags') && contains(github.ref, matrix.architecture)) }}
         run: echo "IS_DEPLOYMENT='true'" >> $GITHUB_ENV
+      - name: Deployment Status
+        id: deployment
+        uses: chrnorm/deployment-action@v1.2.0
+        if: ${{ env.IS_DEPLOYMENT == 'true' }}
+        with:
+          token: ${{ github.token }}
+          environment: ${{ matrix.architecture }}
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Get Image Name
@@ -69,3 +76,17 @@ jobs:
           image-tag: latest-${{ matrix.architecture }}
           dockerfile: Dockerfile.${{ matrix.architecture }}
           custom-args: --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from=${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
+      - name: Update Deployment Status (Success)
+        if: ${{ env.IS_DEPLOYMENT == 'true' && success() }}
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: ${{ github.token }}
+          state: success
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+      - name: Update Deployment Status (Failure)
+        if: ${{ env.IS_DEPLOYMENT == 'true' && (failure() || cancelled()) }}
+        uses: chrnorm/deployment-status@releases/v1
+        with:
+          token: ${{ github.token }}
+          state: failure
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}

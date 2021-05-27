@@ -27,8 +27,8 @@ jobs:
         run: echo "IS_DEPLOYMENT='true'" >> $GITHUB_ENV
       - name: Deployment Status
         id: deployment
-        uses: chrnorm/deployment-action@v1.2.0
         if: ${{ env.IS_DEPLOYMENT == 'true' }}
+        uses: chrnorm/deployment-action@v1.2.0
         with:
           token: ${{ github.token }}
           environment: ${{ matrix.architecture }}

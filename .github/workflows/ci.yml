@@ -29,7 +29,7 @@ jobs:
         run: echo "IS_DEPLOYMENT='true'" >> $GITHUB_ENV
       - name: Deployment Status
         id: deployment
-        if: ${{ env.IS_DEPLOYMENT == true }}
+        if: ${{ env.IS_DEPLOYMENT == 'true' }}
         uses: chrnorm/deployment-action@v1.2.0
         with:
           token: ${{ github.token }}
@@ -71,7 +71,7 @@ jobs:
           format: table
       - name: Build and publish Docker Image to GitHub Packages Registry
         uses: VaultVulp/gp-docker-action@1.1.8
-        if: ${{ env.IS_DEPLOYMENT == true }}
+        if: ${{ env.IS_DEPLOYMENT == 'true' }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           image-name: rails
@@ -79,14 +79,14 @@ jobs:
           dockerfile: Dockerfile.${{ matrix.architecture }}
           custom-args: --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from=${{ steps.build-docker-image-using-cache.outputs.FULL_IMAGE_NAME }}:${{ github.sha }}
       - name: Update Deployment Status (Success)
-        if: ${{ env.IS_DEPLOYMENT == true && success() }}
+        if: ${{ env.IS_DEPLOYMENT == 'true' && success() }}
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
           state: success
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
       - name: Update Deployment Status (Failure)
-        if: ${{ env.IS_DEPLOYMENT == true && (failure() || cancelled()) }}
+        if: ${{ env.IS_DEPLOYMENT == 'true' && (failure() || cancelled()) }}
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}

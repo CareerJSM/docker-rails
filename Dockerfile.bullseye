@@ -16,7 +16,7 @@ RUN sed -i 's/deb http:\/\/deb.debian.org\/debian buster main/deb https:\/\/deb.
 
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION v12.8.1
+ENV NODE_VERSION v12.22.1
 RUN mkdir $NVM_DIR \
   && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash \
   && . $NVM_DIR/nvm.sh \

@@ -48,6 +48,7 @@ RUN apk add \
 
 RUN apk add avahi-libs=0.8-r3 \
 libxml2=2.9.10-r7 \
+gdk-pixbuf=2.42.4-r0 \
  --repository  http://dl-3.alpinelinux.org/alpine/v3.13/main/
 
 # https://github.com/locomotivecms/wagon/issues/340

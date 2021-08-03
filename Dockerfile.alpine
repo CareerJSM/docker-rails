@@ -2,8 +2,8 @@
 
 FROM ruby:2.6.5-alpine3.11
 
-ENV NODE_VERSION 12.22.1-r0
-ENV APK_TOOLS_VERSION 2.10.6-r0
+ENV NODE_VERSION 12.22.4-r0
+ENV APK_TOOLS_VERSION 2.10.7-r0
 RUN \
   apk add --update nodejs=${NODE_VERSION} npm=${NODE_VERSION} apk-tools=${APK_TOOLS_VERSION}\
   && npm install --global yarn
@@ -38,8 +38,8 @@ RUN apk add --update --no-cache git
 
 # Upgrade packages from alpine 3.13 package repo
 RUN apk add \
-  avahi-libs=0.8-r3 \
-  libxml2=2.9.10-r7 \
+  avahi-libs=0.8-r4 \
+  libxml2=2.9.12-r0 \
   gdk-pixbuf=2.42.4-r0 \
   --repository  http://dl-3.alpinelinux.org/alpine/v3.13/main/
 

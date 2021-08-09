@@ -1,14 +1,11 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ruby:2.6.8-alpine3.14
+FROM ruby:2.6.8-alpine3.12
 
-ENV NODE_VERSION 14.17.4-r0
-ENV APK_TOOLS_VERSION 2.12.5-r1
-ENV NPM_VERSION 7.17.0-r0
 ENV BUNDLER_VERSION 2.2.25
 
 RUN \
-  apk add --update nodejs=${NODE_VERSION} npm=${NPM_VERSION} apk-tools=${APK_TOOLS_VERSION}\
+  apk add --update nodejs npm apk-tools\
   && npm install --global yarn
 
 # Don't inherit local env settings when setting up bundler
@@ -39,7 +36,7 @@ RUN apk add --update --no-cache \
 # Need git for some gems
 RUN apk add --update --no-cache git
 
-# Upgrade packages from alpine 3.14 package repo
+# Upgrade packages from alpine 3.14 package repo for vulnerabilities
 RUN apk add \
   apk-tools=2.12.7-r0 \
   --repository  http://dl-3.alpinelinux.org/alpine/v3.14/main/

@@ -5,6 +5,7 @@ FROM ruby:2.6.8-alpine3.14
 ENV NODE_VERSION 14.17.4-r0
 ENV APK_TOOLS_VERSION 2.12.5-r1
 ENV NPM_VERSION 7.17.0-r0
+ENV BUNDLER_VERSION 2.2.25
 
 RUN \
   apk add --update nodejs=${NODE_VERSION} npm=${NPM_VERSION} apk-tools=${APK_TOOLS_VERSION}\
@@ -18,7 +19,7 @@ ENV GEM_HOME "/usr/local/bundle"
 ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
 
 RUN mkdir -p ${GEM_HOME} \
-  && gem install bundler -v 2.1.4
+  && gem install bundler -v ${BUNDLER_VERSION}
 # https://jer-k.github.io/update-gem-dockerfile-alpine-linux
 RUN apk --update add --virtual \
   run-dependencies \

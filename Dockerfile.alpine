@@ -1,9 +1,11 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ruby:2.6.5-alpine3.11
+FROM ruby:2.6.8-alpine3.12
 
 ENV NODE_VERSION 12.22.4-r0
-ENV APK_TOOLS_VERSION 2.10.7-r0
+ENV APK_TOOLS_VERSION 2.10.6-r0
+ENV BUNDLER_VERSION 2.2.25
+
 RUN \
   apk add --update nodejs=${NODE_VERSION} npm=${NODE_VERSION} apk-tools=${APK_TOOLS_VERSION}\
   && npm install --global yarn
@@ -16,7 +18,7 @@ ENV GEM_HOME "/usr/local/bundle"
 ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
 
 RUN mkdir -p ${GEM_HOME} \
-  && gem install bundler -v 2.1.4
+  && gem install bundler -v ${BUNDLER_VERSION}
 # https://jer-k.github.io/update-gem-dockerfile-alpine-linux
 RUN apk --update add --virtual \
   run-dependencies \
@@ -36,23 +38,10 @@ RUN apk add --update --no-cache \
 # Need git for some gems
 RUN apk add --update --no-cache git
 
-# Upgrade packages from alpine 3.13 package repo
+# Upgrade packages from alpine 3.14 package repo for vulnerabilities
 RUN apk add \
-  avahi-libs=0.8-r4 \
-  libxml2=2.9.12-r0 \
-  gdk-pixbuf=2.42.4-r0 \
-  --repository  http://dl-3.alpinelinux.org/alpine/v3.13/main/
-
-# Upgrade to fix known security issues
-RUN apk add \
-  python3=3.8.10-r0 \
-  busybox=1.31.1-r10 \
-  gcc=9.3.0-r0 \
-  perl=5.30.3-r0 \
-  sqlite=3.30.1-r2 \
-  musl-utils=1.1.24-r3 \
-  libgcc=9.3.0-r0 \
-  ghostscript=9.50-r1
+  apk-tools=2.12.7-r0 \
+  --repository  http://dl-3.alpinelinux.org/alpine/v3.14/main/
 
 # https://github.com/locomotivecms/wagon/issues/340
 WORKDIR /
